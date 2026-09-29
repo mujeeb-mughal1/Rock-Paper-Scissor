@@ -1,79 +1,123 @@
+const playerControls = document.querySelector(".controls")
+const result = document.getElementById("result-text");
+const roundElement = document.getElementById("round-count");
+const p1Score=document.querySelector("#p1-score");
+const p2Score=document.querySelector("#p2-score");
+let isWinner = false;
+let roundCount=0;
+let userChoice;
+let computerChoice;
+let userScore = 0;
+let computerScore = 0;
+const MAX_ROUND = 5;
+
+const displayResult = (isWinner)=>{
+    
+    if (isWinner) {
+        setScore(userScore,computerScore);
+        result.textContent=` 🎉 You win this round! ${userChoice} beats ${computerChoice}`
+
+    } else if (!isWinner) {
+        setScore(userScore,computerScore);
+        result.textContent=` 😢 You lose this round! ${computerChoice} beats ${userChoice}`
+
+    } 
+    
+}
+const finalResult =  ()=>{
+    if(userScore>computerScore){
+        result.textContent=` 🎉 Congratulations! You won the overall game!`
+    }else if(computerScore>userScore){
+        result.textContent=` 😢 Game Over! The computer won the overall game.`
+    }else{
+        result.textContent=` 🤝 It's an overall tie game!`   
+    }
+}
+
+
 //  Logic to get the computer choice
-function getComputerChoice() {
-  const randomNumber = Math.random();
-  if (randomNumber < 0.34) {
-    return "rock";
-  } else if (randomNumber < 0.67) {
-    return "paper";
-  } else {
-    return "scissors";
-  }
-}
+const getComputerChoice = () => {
+  const choices = ["rock", "paper", "scissor"];
+  const randomIndex = Math.floor(Math.random() * choices.length);
+  return choices[randomIndex].trim();
+};
 
-// Logic to get the human choice
-function getHumanChoice() {
-  let choice = prompt("Enter rock, paper, or scissors:");
-  // Handle edge case if user cancels the prompt
-  if (!choice) return ""; 
-  return choice.trim().toLowerCase();
-}
 
-// Logic to play the entire game (includes scores and 5 rounds)
-function playGame() {
+// Logic to play the entire game 
+const playGame = (userChoice,computerChoice) =>{
 
-  let humanScore = 0;
-  let computerScore = 0;
-
+    
   //  Logic to play a single round
-  function playRound(humanChoice, computerChoice) {
-    if (!humanChoice) {
-      console.log("Cancelled round or no input provided.");
-      return;
-    }
-
-    if (humanChoice === computerChoice) {
-      console.log(`It's a tie! Both chose ${humanChoice}`);
-    } else if (
-      (humanChoice === "rock" && computerChoice === "scissors") ||
-      (humanChoice === "paper" && computerChoice === "rock") ||
-      (humanChoice === "scissors" && computerChoice === "paper")
-    ) {
-      console.log(`You win this round! ${humanChoice} beats ${computerChoice}`);
-      humanScore++;
-    } else {
-      console.log(`You lose this round! ${computerChoice} beats ${humanChoice}`);
-      computerScore++;
-    }
+  function playRound(userChoice, computerChoice) {
+        if(userChoice === computerChoice) {
+             result.textContent=` 🤝 It's a tie game!`;
+        } else if(
+        (userChoice === "rock" && computerChoice === "scissor") ||
+        (userChoice === "paper" && computerChoice === "rock") ||
+        (userChoice === "scissor" && computerChoice === "paper")
+        ){ 
+            ++userScore;
+            isWinner=true;
+            displayResult(isWinner); 
+        } else{
+            ++computerScore;
+            isWinner=false;
+            displayResult(isWinner);
+        }
   }
 
-  // Play 5 rounds using a loop
-  for (let round = 1; round <= 5; round++) {
-    console.log(`--- Round ${round} ---`);
-    
-    const humanSelection = getHumanChoice();
-    const computerSelection = getComputerChoice();
+playRound(userChoice, computerChoice);
 
-    console.log(`You chose: ${humanSelection}`);
-    console.log(`Computer chose: ${computerSelection}`);
-
-    playRound(humanSelection, computerSelection);
-    
-    console.log(`Current Score -> You: ${humanScore} | Computer: ${computerScore}`);
-  }
-
-  // Declare final winner after 5 rounds
-  console.log("====================");
-  console.log("FINAL GAME RESULTS:");
-  console.log(`Final Score -> You: ${humanScore} | Computer: ${computerScore}`);
-
-  if (humanScore > computerScore) {
-    console.log("🎉 Congratulations! You won the overall game!");
-  } else if (computerScore > humanScore) {
-    console.log("😢 Game Over! The computer won the overall game.");
-  } else {
-    console.log("🤝 It's an overall tie game!");
-  }
 }
 
-// Start the game automatically when the page loads
-playGame();
+//  Logic to get the user choice
+playerControls.addEventListener('click',(e)=>{
+    if(roundCount<MAX_ROUND){
+        if (e.target === e.currentTarget) {
+            return;
+        }
+        if(e.target.classList.contains("btn-choice")){
+            userChoice = e.target.textContent.toLowerCase().trim();
+        }
+        setRound();
+        
+        computerChoice=getComputerChoice();
+        addImg();
+        playGame( userChoice,computerChoice);
+        if(MAX_ROUND==roundCount) finalResult();
+    } else{
+        reset()
+    }
+  
+    
+
+});
+
+const setRound = ()=>{
+    ++roundCount;
+    roundElement.textContent=roundCount;
+        
+    
+}
+
+const setScore= (userScore,computerScore)=>{
+    p1Score.textContent=userScore;
+    p2Score.textContent=computerScore;
+};
+
+
+const reset= ()=>{
+        roundCount=0;
+        roundElement.textContent=roundCount;
+        result.textContent=`Waiting for move...`;
+        userScore=0;
+        computerScore=0;
+        setScore(userScore, computerScore);
+}
+
+const addImg = ()=>{
+    const playerChoiceImg = document.getElementById("player-img");
+    const computerChoiceImg = document.getElementById("computer-img");
+    playerChoiceImg.src=`./images/${userChoice}.jpg`;
+    computerChoiceImg.src=`./images/${computerChoice}.jpg`;
+}

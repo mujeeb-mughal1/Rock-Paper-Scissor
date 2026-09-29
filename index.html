@@ -1,13 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Rock Paper Scissors</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rock Paper Scissors</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Rock Paper Scissors - Open the Console!</h1>
-    
-    <!-- Link your external JavaScript file -->
-    <script src="script.js"></script>
+
+  <main class="game-board">
+    <!-- Header & Scoreboard -->
+    <header class="scoreboard">
+      <div class="score">Player 1 : <span id="p1-score">0</span></div>
+      <div class="game-title">Rock - Paper - Sci</div>
+      <div class="score">Player 2 : <span id="p2-score">0</span></div>
+    </header>
+
+    <!-- Round Tracker -->
+    <div class="round-tracker">
+      Round : <span id="round-count"></span>
+    </div>
+
+    <!-- Visual Arena -->
+   <div class="arena">
+  <div class="image-placeholder" aria-label="Player 1 choice">
+    <img src="#" alt="player-img" id="player-img">
+    <span class="placeholder-text">?</span>
+  </div>
+  
+  <div class="arena-divider" aria-hidden="true">:</div>
+
+  <div class="image-placeholder" aria-label="Player 2 choice">
+     <img src="#" alt="computer-img" id="computer-img">
+     <span class="placeholder-text">?</span>
+  </div>
+</div>
+    <!-- Player Controls -->
+    <div class="controls">
+      <button class="btn-choice" id="btn-rock" data-choice="rock" type="button" aria-label="Play Rock">Rock</button>
+      <button class="btn-choice" id="btn-paper" data-choice="paper" type="button" aria-label="Play Paper">Paper</button>
+      <button class="btn-choice" id="btn-scis" data-choice="scis" type="button" aria-label="Play Scissors">Scissor</button>
+    </div>
+
+    <!-- Result Display -->
+    <div class="result-display" aria-live="polite">
+      <span class="result-label">Result :</span>
+      <span class="result-text" id="result-text">Waiting for move...</span>
+    </div>
+  </main>
+
+  <script defer src="script.js"></script>
+
 </body>
 </html>
